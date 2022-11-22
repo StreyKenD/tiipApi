@@ -1,0 +1,16 @@
+API made for sentiment analysis TCC
+
+todo - make API security
+     - sera chamado sempre que um comentario for criado
+     - caso ja tenha comentario ele ira pegar o comentario + numero de comentarios e nota acumulada + nota do comentario para alterar a nota comentario
+     - aplicar um modelo customizado para analisar os textos
+
+Create a virtual environment by running this "python -m venv venv"
+to activate de virtual enviroment run this on terminal "venv\Scripts\activate"
+
+to test api run "uvicorn apiPython:app --reload"
+
+in the same URL put /docs to open the documentation
+
+
+
