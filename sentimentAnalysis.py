@@ -8,7 +8,9 @@ nltk.download('vader_lexicon')
 def get_sentiments(payload):
     sid = SentimentIntensityAnalyzer()
 
-    scores = sid.polarity_scores(payload['body'])
+    formattedBody = format(payload['body'])
+
+    scores = sid.polarity_scores(formattedBody)
     sentiments = []
 
     for key, value in scores.items():
@@ -24,3 +26,17 @@ def get_sentiments(payload):
     filtered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
 
     return filtered
+
+
+def formattedBody(body):
+    # removido caracteres não alfabeticos
+    body = body.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+
+    #remove caracteres unicode
+    body = body.replace(r'\r+|\n+|\t+','', regex=True)
+
+    # covertido para lower-case
+    body = body.str.casefold()
+
+    #remove numeros
+    body = body.str.replace('\d+', '')
