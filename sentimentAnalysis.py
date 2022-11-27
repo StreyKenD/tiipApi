@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
+
+from database import doQuery
 # Function called in the api
 
 def get_sentiments(payload):
@@ -23,9 +25,11 @@ def get_sentiments(payload):
         sentiments.append(commentary)
 
     # so deixa as linhas onde o sentimento é compound
-    filtered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
+    sentimentFiltered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
 
-    return filtered
+    result = doQuery(payload, sentimentFiltered)
+
+    return result
 
 
 def formattedBody(body):

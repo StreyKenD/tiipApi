@@ -12,5 +12,10 @@ to test api run "uvicorn apiPython:app --reload"
 
 in the same URL put /docs to open the documentation
 
+conectar no banco
+salvar no banco de dados os sentimentos
+ver tabela para salvar o s dados
 
+Update requeriments.txt
+pip freeze > requirements.txt
 
