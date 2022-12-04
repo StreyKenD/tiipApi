@@ -1,5 +1,6 @@
 from fastapi import Request, FastAPI
 from sentimentAnalysis import get_sentiments
+# from database import doQueryAllPosts
 
 app = FastAPI()
 
@@ -9,6 +10,7 @@ async def getSentiment(request: Request):
     result = 'None'
     if content is not None:
         result = get_sentiments(content)
+        # result = doQueryAllPosts()
 
     return result
 
