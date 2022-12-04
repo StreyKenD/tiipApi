@@ -15,7 +15,7 @@ def doQuery(payload, sentimentFiltered):
         selectPost = "select * from comments where post_id = %s;"
         cur.execute(selectPost, (payload['post_id'],))
         post = cur.fetchall()
-        oldPostScore = post[6]  
+        oldPostScore = post[0][2]  
 
         query = "select * from comments where post_id = %s;"
         cur.execute(query, (payload['post_id'],))
@@ -27,18 +27,17 @@ def doQuery(payload, sentimentFiltered):
             total_score += comment[2] if comment[2] != None else 0
             size += 1
 
-        postScore = total_score / size
+        if size > 0:
+            postScore = total_score / size
 
         if postScore != oldPostScore:
-            postId = str(post[0])
+            postId = str(payload['post_id'])
             url = 'http://tip-laravel.herokuapp.com/api/post/'+ postId +'/edit'
             json = {
                 'sentiment_score': postScore,
             }
             x = requests.put(url, json = json)
             print(x.text)
-
-        # chamar api do site /api/post/[ID]/edit
        
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
