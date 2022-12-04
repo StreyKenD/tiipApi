@@ -31,6 +31,27 @@ def get_sentiments(payload):
 
     return result
 
+def get_sentiments_all(payload):
+    sid = SentimentIntensityAnalyzer()
+
+    formattedBody = format(payload[1])
+    scores = sid.polarity_scores(formattedBody)
+    sentiments = []
+
+    for key, value in scores.items():
+        commentary = {
+            "sentiment_type": '',
+            "sentiment_score": ''
+        }
+        commentary["sentiment_type"] = key
+        commentary["sentiment_score"] = value
+        sentiments.append(commentary)
+
+    # so deixa as linhas onde o sentimento é compound
+    sentimentFiltered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
+
+    return sentimentFiltered
+
 
 def formattedBody(body):
     # removido caracteres não alfabeticos
