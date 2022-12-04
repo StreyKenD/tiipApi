@@ -6,6 +6,7 @@ import requests
 def doQuery(payload, sentimentFiltered):
     """ Connect to the PostgreSQL database server """
     conn = None
+    postScore = 0
     try:
         params = config()
         conn = psycopg2.connect(**params)
