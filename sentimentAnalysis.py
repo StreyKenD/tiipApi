@@ -4,37 +4,14 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
 
-from database import doQuery
-# Function called in the api
+# from database import doQuery
+# # Function called in the api
 
-def get_sentiments(post_id, body):
-    sid = SentimentIntensityAnalyzer()
-
-    formattedBody = format(body)
-
-    scores = sid.polarity_scores(formattedBody)
-    sentiments = []
-
-    for key, value in scores.items():
-        commentary = {
-            "sentiment_type": '',
-            "sentiment_score": ''
-        }
-        commentary["sentiment_type"] = key
-        commentary["sentiment_score"] = value
-        sentiments.append(commentary)
-
-    # so deixa as linhas onde o sentimento é compound
-    sentimentFiltered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
-
-    result = doQuery(post_id, body, sentimentFiltered)
-
-    return result
-
-# def get_sentiments_all(payload):
+# def get_sentiments(post_id, body):
 #     sid = SentimentIntensityAnalyzer()
 
-#     formattedBody = format(payload[1])
+#     formattedBody = format(body)
+
 #     scores = sid.polarity_scores(formattedBody)
 #     sentiments = []
 
@@ -50,7 +27,30 @@ def get_sentiments(post_id, body):
 #     # so deixa as linhas onde o sentimento é compound
 #     sentimentFiltered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
 
-#     return sentimentFiltered
+#     result = doQuery(post_id, body, sentimentFiltered)
+
+#     return result
+
+def get_sentiments_all(text):
+    sid = SentimentIntensityAnalyzer()
+
+    formattedBody = format(text)
+    scores = sid.polarity_scores(formattedBody)
+    sentiments = []
+
+    for key, value in scores.items():
+        commentary = {
+            "sentiment_type": '',
+            "sentiment_score": ''
+        }
+        commentary["sentiment_type"] = key
+        commentary["sentiment_score"] = value
+        sentiments.append(commentary)
+
+    # so deixa as linhas onde o sentimento é compound
+    sentimentFiltered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
+
+    return sentimentFiltered
 
 
 def formattedBody(body):

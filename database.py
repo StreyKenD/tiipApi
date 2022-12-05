@@ -1,9 +1,10 @@
 import psycopg2
 from config import config
-# from sentimentAnalysis import get_sentiments_allb
+from sentimentAnalysis import get_sentiments_all
 import requests
 
-def doQuery(post_id, body, sentimentFiltered):
+# def doQuery(post_id, body, sentimentFiltered):
+def doQuery(post_id):
     """ Connect to the PostgreSQL database server """
     conn = None
     postScore = 0
@@ -22,15 +23,19 @@ def doQuery(post_id, body, sentimentFiltered):
             query = "select * from comments where post_id = %s;"
             cur.execute(query, (post_id,))
             comments = cur.fetchall()  
-            total_score=sentimentFiltered['sentiment_score']
-            size=1
+            total_score=0
+            # total_score=sentimentFiltered['sentiment_score']
+            size=0
 
             for comment in comments:
-                
-                total_score += comment[2] if comment[2] != None else 0
+                score = get_sentiments_all(comment[1])
+                print('current commentary score: ',score)
+                total_score += score['sentiment_score'] if score['sentiment_score'] != None else 0
                 size += 1
 
             postScore = total_score / size
+            print('total_score: ', total_score)
+            print('num of comments: ',len(comments))
             print('postScore: ',postScore)
 
             if postScore != oldPostScore:
@@ -51,7 +56,7 @@ def doQuery(post_id, body, sentimentFiltered):
             if len(post) > 0:
                 result = {
                     "post_score": postScore,
-                    "comment_score": sentimentFiltered['sentiment_score']
+                    # "comment_score": sentimentFiltered['sentiment_score']
                 }
             else:
                 result = {
