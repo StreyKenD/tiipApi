@@ -7,6 +7,7 @@ def doQuery(payload, sentimentFiltered):
     """ Connect to the PostgreSQL database server """
     conn = None
     postScore = 0
+    post = []
     try:
         params = config()
         conn = psycopg2.connect(**params)
@@ -15,29 +16,37 @@ def doQuery(payload, sentimentFiltered):
         selectPost = "select * from comments where post_id = %s;"
         cur.execute(selectPost, (payload['post_id'],))
         post = cur.fetchall()
-        oldPostScore = post[0][2]  
+        print(post)
+        if len(post) > 0:
+            oldPostScore = post[0][2] 
 
-        query = "select * from comments where post_id = %s;"
-        cur.execute(query, (payload['post_id'],))
-        comments = cur.fetchall()  
-        total_score=sentimentFiltered['sentiment_score']
-        size=0
+            query = "select * from comments where post_id = %s;"
+            cur.execute(query, (payload['post_id'],))
+            comments = cur.fetchall()  
+            total_score=sentimentFiltered['sentiment_score']
+            size=0
 
-        for comment in comments:
-            total_score += comment[2] if comment[2] != None else 0
-            size += 1
+            print(len(comments))
+            for comment in comments:
+                
+                total_score += comment[2] if comment[2] != None else 0
+                size += 1
 
-        if size > 0:
-            postScore = total_score / size
+            if size > 0:
+                postScore = total_score / size
+                print(total_score)
+                print(size)
+                print(total_score / size)
 
-        if postScore != oldPostScore:
-            postId = str(payload['post_id'])
-            url = 'http://tip-laravel.herokuapp.com/api/post/'+ postId +'/edit'
-            json = {
-                'sentiment_score': postScore,
-            }
-            x = requests.put(url, json = json)
-            print(x.text)
+            print(postScore)
+            if postScore != oldPostScore:
+                postId = str(payload['post_id'])
+                url = 'http://tip-laravel.herokuapp.com/api/post/'+ postId +'/edit'
+                json = {
+                    'sentiment_score': postScore,
+                }
+                x = requests.put(url, json = json)
+                print(x.text)
        
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -45,10 +54,15 @@ def doQuery(payload, sentimentFiltered):
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-            result = {
-                "post_score": postScore,
-                "comment_score": sentimentFiltered['sentiment_score']
-            }
+            if len(post) > 0:
+                result = {
+                    "post_score": postScore,
+                    "comment_score": sentimentFiltered['sentiment_score']
+                }
+            else:
+                result = {
+                    "error": "Post não encontrado"
+                }
         return result
 
 
