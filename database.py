@@ -16,7 +16,6 @@ def doQuery(payload, sentimentFiltered):
         selectPost = "select * from comments where post_id = %s;"
         cur.execute(selectPost, (payload['post_id'],))
         post = cur.fetchall()
-        print(post)
         if len(post) > 0:
             oldPostScore = post[0][2] 
 
@@ -24,21 +23,15 @@ def doQuery(payload, sentimentFiltered):
             cur.execute(query, (payload['post_id'],))
             comments = cur.fetchall()  
             total_score=sentimentFiltered['sentiment_score']
-            size=0
+            size=1
 
-            print(len(comments))
             for comment in comments:
                 
                 total_score += comment[2] if comment[2] != None else 0
                 size += 1
 
-            if size > 0:
-                postScore = total_score / size
-                print(total_score)
-                print(size)
-                print(total_score / size)
+            postScore = total_score / size
 
-            print(postScore)
             if postScore != oldPostScore:
                 postId = str(payload['post_id'])
                 url = 'http://tip-laravel.herokuapp.com/api/post/'+ postId +'/edit'
