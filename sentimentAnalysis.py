@@ -7,10 +7,10 @@ nltk.download('vader_lexicon')
 from database import doQuery
 # Function called in the api
 
-def get_sentiments(payload):
+def get_sentiments(post_id, body):
     sid = SentimentIntensityAnalyzer()
 
-    formattedBody = format(payload['body'])
+    formattedBody = format('body')
 
     scores = sid.polarity_scores(formattedBody)
     sentiments = []
@@ -27,7 +27,7 @@ def get_sentiments(payload):
     # so deixa as linhas onde o sentimento é compound
     sentimentFiltered = next(x for x in sentiments if x['sentiment_type'] == 'compound')	
 
-    result = doQuery(payload, sentimentFiltered)
+    result = doQuery(post_id, body, sentimentFiltered)
 
     return result
 

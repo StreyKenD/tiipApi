@@ -8,7 +8,7 @@ todo - make API security
 Create a virtual environment by running this "python -m venv venv"
 to activate de virtual enviroment run this on terminal "venv\Scripts\activate"
 
-to test api run "uvicorn apiPython:app --reload"
+to test api run "uvicorn myapi:app --reload"
 
 in the same URL put /docs to open the documentation
 

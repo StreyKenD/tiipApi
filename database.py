@@ -3,7 +3,7 @@ from config import config
 # from sentimentAnalysis import get_sentiments_allb
 import requests
 
-def doQuery(payload, sentimentFiltered):
+def doQuery(post_id, body, sentimentFiltered):
     """ Connect to the PostgreSQL database server """
     conn = None
     postScore = 0
@@ -14,13 +14,13 @@ def doQuery(payload, sentimentFiltered):
         cur = conn.cursor()
 
         selectPost = "select * from comments where post_id = %s;"
-        cur.execute(selectPost, (payload['post_id'],))
+        cur.execute(selectPost, (post_id,))
         post = cur.fetchall()
         if len(post) > 0:
             oldPostScore = post[0][2] 
 
             query = "select * from comments where post_id = %s;"
-            cur.execute(query, (payload['post_id'],))
+            cur.execute(query, (post_id,))
             comments = cur.fetchall()  
             total_score=sentimentFiltered['sentiment_score']
             size=1
@@ -33,7 +33,7 @@ def doQuery(payload, sentimentFiltered):
             postScore = total_score / size
 
             if postScore != oldPostScore:
-                postId = str(payload['post_id'])
+                postId = str(post_id)
                 url = 'http://tip-laravel.herokuapp.com/api/post/'+ postId +'/edit'
                 json = {
                     'sentiment_score': postScore,
