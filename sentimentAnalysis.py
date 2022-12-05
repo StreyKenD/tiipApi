@@ -10,7 +10,7 @@ from database import doQuery
 def get_sentiments(post_id, body):
     sid = SentimentIntensityAnalyzer()
 
-    formattedBody = format('body')
+    formattedBody = format(body)
 
     scores = sid.polarity_scores(formattedBody)
     sentiments = []

@@ -31,6 +31,7 @@ def doQuery(post_id, body, sentimentFiltered):
                 size += 1
 
             postScore = total_score / size
+            print('postScore: ',postScore)
 
             if postScore != oldPostScore:
                 postId = str(post_id)
